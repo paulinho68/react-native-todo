@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { StatusBar, Text, View } from 'react-native';
+import { SafeAreaView, StatusBar, Text, View } from 'react-native';
 import { Home } from './src/Home';
 import SplashScreen from "react-native-splash-screen";
 
@@ -9,8 +9,10 @@ export default function App() {
   })
   return (
     <>
-      <StatusBar barStyle='light-content' backgroundColor={'#121015'} />
-      <Home />
+      <SafeAreaView style={{ flex: 1 }}>
+        <StatusBar barStyle='light-content' backgroundColor={'#8257E5'} />
+        <Home />
+      </SafeAreaView>
     </>
   )
 }
