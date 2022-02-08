@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Dimensions, Image, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import { useTask } from '../Context/useTask';
 
-export function SearchBar() {
+export function InsertTask() {
     const [task, setTask] = useState('');
 
     const { addTask } = useTask();
@@ -11,8 +11,10 @@ export function SearchBar() {
         if (task) {
             addTask({
                 description: task,
-                id: new Date().getTime()
-            })
+                id: String(new Date().getTime()),
+                checked: false
+            });
+            setTask('');
         }
     };
 
@@ -20,10 +22,11 @@ export function SearchBar() {
         <View style={styles.content}>
             <TextInput
                 style={styles.input}
+                value={task}
                 onChangeText={setTask}
                 placeholder="Adicione uma tarefa"
             />
-            <TouchableOpacity style={styles.button} activeOpacity={0.8} onPress={handleAddTask}>
+            <TouchableOpacity style={styles.button} activeOpacity={0.95} onPress={handleAddTask}>
                 <Image style={styles.iconButton} source={require('../../assets/arrowRight.png')} />
             </TouchableOpacity>
         </View>
@@ -35,7 +38,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignSelf: 'center',
         marginTop: Dimensions.get('window').height * -0.04,
-        marginBottom: 32
+        marginBottom: 32,
+        paddingHorizontal: 24
     },
     input: {
         width: '80%',
