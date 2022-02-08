@@ -1,23 +1,27 @@
 import React from 'react';
 import {
     View,
-    Text,
     StyleSheet,
-    Image
+    SafeAreaView,
 } from 'react-native';
+import { Header } from './components/Header';
+import { SearchBar } from './components/SearchBar';
+import { Task } from './components/Task';
+import { useTask } from './Context/useTask';
 
 export function Home() {
+    const { tasks } = useTask();
+
     return (
-        <View style={styles.container}>
-            <View style={styles.header}>
-                <View style={styles.contentHeader}>
-                    <Image style={styles.logoImage} source={require('../assets/todo.png')} />
-                    <Text style={styles.textHeader}>Você tem <Text style={{ fontWeight: '700' }}>3 tarefas</Text></Text>
-                </View>
-            </View>
+        <SafeAreaView style={styles.container}>
+            <Header />
             <View style={styles.content}>
+                <SearchBar />
+                {tasks.length ? tasks.map(task => (
+                    <Task key={task.id} description={task.description} />
+                )) : null}
             </View>
-        </View >
+        </SafeAreaView >
     )
 }
 
@@ -25,28 +29,9 @@ const styles = StyleSheet.create({
     container: {
         flex: 1
     },
-    header: {
-        paddingHorizontal: 24,
-        backgroundColor: "#8257E5",
-        flex: 1,
-    },
-    contentHeader: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginTop: '10%'
-    },
-    logoImage: {
-        width: 64,
-        height: 24,
-        resizeMode: 'contain',
-    },
-    textHeader: {
-        fontFamily: "Inter",
-        fontSize: 15
-    },
     content: {
         flex: 4,
-        backgroundColor: '#000'
+        backgroundColor: '#E5E5E5',
+        paddingHorizontal: 24
     }
 })
