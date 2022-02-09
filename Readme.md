@@ -7,6 +7,7 @@
 - Typescript
 - React-Native's components
 - useCallback
+- useMemo
 
 ### This project I used that dependecies:
 
