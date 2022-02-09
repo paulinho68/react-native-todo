@@ -6,6 +6,7 @@
 - ApiContext
 - Typescript
 - React-Native's components
+- useCallback
 
 ### This project I used that dependecies:
 

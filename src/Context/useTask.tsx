@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { createContext, ReactNode, useContext, useState } from "react";
 import AwesomeAlert from 'react-native-awesome-alerts';
 interface TasksProviderProps {
@@ -26,21 +26,21 @@ export function TasksProvider({ children }: TasksProviderProps) {
     const [showAlertMessage, setShowAlertMessage] = useState<boolean>(false);
     const [idTask, setIdTask] = useState('');
 
-    const addTask = (task: TaskProps) => {
+    const addTask = useCallback((task: TaskProps) => {
         const existTask = Boolean(tasks.find(t => t.description.toLowerCase() === task.description.toLowerCase()))
         if (existTask) {
             setShowAlertMessage(true);
         } else {
             setTasks(tasksBefore => [task, ...tasksBefore]);
         }
-    }
+    }, [tasks]);
 
-    const removeTask = (id: string) => {
+    const removeTask = useCallback((id: string) => {
         setIdTask(id);
         setShowAlertDialog(true);
-    }
+    }, [])
 
-    const editTask = (checked: boolean, id: string, description?: string) => {
+    const editTask = useCallback((checked: boolean, id: string, description?: string) => {
         const editableTask = tasks.find(task => task.id === id);
         const indexPosition = tasks.findIndex(task => task.id === id);
         const newTask = {
@@ -51,7 +51,7 @@ export function TasksProvider({ children }: TasksProviderProps) {
         const newTasks = [...tasks.filter(task => task.id !== id)];
         newTasks.splice(indexPosition, 0, newTask);
         setTasks(newTasks);
-    }
+    }, [tasks]);
 
 
     return (
