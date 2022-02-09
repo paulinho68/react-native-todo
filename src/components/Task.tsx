@@ -4,7 +4,6 @@ import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-nativ
 import LinearGradient from 'react-native-linear-gradient';
 import { useTask } from '../Context/useTask';
 import Icon from 'react-native-vector-icons/Feather';
-// import IconAntDesign from 'react-native-vector-icons/AntDesign';
 
 
 interface TaskProps {
