@@ -1,6 +1,6 @@
 import React from 'react';
 import { createContext, ReactNode, useContext, useState } from "react";
-
+import AwesomeAlert from 'react-native-awesome-alerts';
 interface TasksProviderProps {
     children: ReactNode;
 }
@@ -15,28 +15,37 @@ interface TaskContextData {
     tasks: TaskProps[];
     addTask: (task: TaskProps) => void;
     removeTask: (id: string) => void;
-    editTask: (checked: boolean, id: string) => void;
+    editTask: (checked: boolean, id: string, description?: string) => void;
 }
 
 const TaskContext = createContext<TaskContextData>({} as TaskContextData);
 
 export function TasksProvider({ children }: TasksProviderProps) {
     const [tasks, setTasks] = useState<TaskProps[]>([]);
+    const [showAlertDialog, setShowAlertDialog] = useState<boolean>(false);
+    const [showAlertMessage, setShowAlertMessage] = useState<boolean>(false);
+    const [idTask, setIdTask] = useState('');
 
     const addTask = (task: TaskProps) => {
-        setTasks(tasksBefore => [task, ...tasksBefore]);
+        const existTask = Boolean(tasks.find(t => t.description.toLowerCase() === task.description.toLowerCase()))
+        if (existTask) {
+            setShowAlertMessage(true);
+        } else {
+            setTasks(tasksBefore => [task, ...tasksBefore]);
+        }
     }
 
     const removeTask = (id: string) => {
-        setTasks(tasksBefore => tasksBefore.filter(task => task.id !== id));
+        setIdTask(id);
+        setShowAlertDialog(true);
     }
 
-    const editTask = (checked: boolean, id: string) => {
+    const editTask = (checked: boolean, id: string, description?: string) => {
         const editableTask = tasks.find(task => task.id === id);
         const indexPosition = tasks.findIndex(task => task.id === id);
         const newTask = {
             id: editableTask?.id,
-            description: editableTask?.description,
+            description: description ? description : editableTask?.description,
             checked
         } as TaskProps;
         const newTasks = [...tasks.filter(task => task.id !== id)];
@@ -44,10 +53,41 @@ export function TasksProvider({ children }: TasksProviderProps) {
         setTasks(newTasks);
     }
 
+
     return (
         <TaskContext.Provider
             value={{ tasks, addTask, removeTask, editTask }}
         >
+            <AwesomeAlert
+                show={showAlertDialog}
+                showProgress={false}
+                title="Atenção!"
+                message="Deseja deletar esta tarefa?"
+                closeOnTouchOutside={true}
+                closeOnHardwareBackPress={true}
+                showCancelButton={true}
+                showConfirmButton={true}
+                cancelText="Cancelar"
+                confirmText="Confirmar"
+                confirmButtonColor="#DD6B55"
+                onCancelPressed={() => {
+                    setShowAlertDialog(false)
+                }}
+                onConfirmPressed={() => {
+                    setTasks(tasksBefore => tasksBefore.filter(task => task.id !== idTask));
+                    setShowAlertDialog(false);
+                }}
+            />
+            <AwesomeAlert
+                show={showAlertMessage}
+                title="Atenção"
+                message="Já existe uma tarefa com este nome"
+                closeOnTouchOutside={true}
+                closeOnHardwareBackPress={false}
+                showConfirmButton={true}
+                confirmText="Ok"
+                onConfirmPressed={() => setShowAlertMessage(false)}
+            />
             {children}
         </TaskContext.Provider>
     );

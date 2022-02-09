@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { SafeAreaView, StatusBar, Text, View } from 'react-native';
-import { Home } from './src/Home';
+import { Home } from './src/pages/Home';
 import SplashScreen from "react-native-splash-screen";
 import { TasksProvider } from './src/Context/useTask';
 

@@ -5,10 +5,10 @@ import {
     SafeAreaView,
     FlatList,
 } from 'react-native';
-import { Header } from './components/Header';
-import { InsertTask } from './components/InsertTask';
-import { Task } from './components/Task';
-import { useTask } from './Context/useTask';
+import { Header } from '../components/Header';
+import { InsertTask } from '../components/InsertTask';
+import { Task } from '../components/Task';
+import { useTask } from '../Context/useTask';
 
 export function Home() {
     const { tasks } = useTask();

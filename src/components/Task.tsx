@@ -1,8 +1,11 @@
 import CheckBox from '@react-native-community/checkbox';
 import React, { useState } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { useTask } from '../Context/useTask';
+import Icon from 'react-native-vector-icons/Feather';
+// import IconAntDesign from 'react-native-vector-icons/AntDesign';
+
 
 interface TaskProps {
     id: string;
@@ -12,7 +15,10 @@ interface TaskProps {
 }
 
 function TaskContent({ checked, description, id }: TaskProps) {
-    const [toggleCheckBox, setToggleCheckBox] = useState(checked);
+    const [toggleCheckbox, setToggleCheckbox] = useState(checked);
+    const [toggleEdit, setToggleEdit] = useState(false);
+    const [title, setTitle] = useState(description);
+
     const { removeTask, editTask } = useTask();
 
     const handleRemoveTask = () => {
@@ -24,29 +30,65 @@ function TaskContent({ checked, description, id }: TaskProps) {
                 <CheckBox
                     style={styles.checkbox}
                     tintColors={{ true: '#1db863', false: '#666666' }}
-                    value={toggleCheckBox}
+                    value={toggleCheckbox}
                     onValueChange={(newValue) => {
                         editTask(newValue, id);
-                        setToggleCheckBox(newValue)
+                        setToggleCheckbox(newValue)
                     }}
                 />
-                <Text
-                    style={
-                        [
-                            styles.taskText,
-                            {
-                                color: toggleCheckBox ? '#1db863' : '#666666',
-                                textDecorationLine: toggleCheckBox ? 'line-through' : 'none'
-                            }
-                        ]
-                    }
-                >
-                    {description}
-                </Text>
+                {toggleEdit ? (
+                    <TextInput
+                        value={title}
+                        onChangeText={setTitle}
+                        style={styles.inputText}
+                    />
+                ) : (
+
+                    <Text
+                        style={
+                            [
+                                styles.taskText,
+                                {
+                                    color: toggleCheckbox ? '#1db863' : '#666666',
+                                    textDecorationLine: toggleCheckbox ? 'line-through' : 'none'
+                                }
+                            ]
+                        }
+                    >
+                        {title !== description ? title : description}
+                    </Text>
+                )}
             </View>
-            <TouchableOpacity style={{ alignSelf: 'center' }} activeOpacity={0.5} onPress={handleRemoveTask}>
-                <Image style={styles.trashIcon} source={require('../../assets/trash.png')} />
-            </TouchableOpacity>
+            <View style={{ flexDirection: 'row' }}>
+                <TouchableOpacity style={{ alignSelf: 'center', marginRight: 18 }} activeOpacity={0.5} onPress={() => {
+                    if (!toggleEdit) {
+                        editTask(toggleCheckbox, id, title);
+                    }
+                    setToggleEdit(!toggleEdit)
+                }}
+                >
+                    {toggleEdit ? (
+                        <Icon
+                            name="check"
+                            size={24}
+                            color="#B2B2B2"
+                        />
+                    ) : (
+                        <Icon
+                            name="edit-3"
+                            size={24}
+                            color="#B2B2B2"
+                        />
+                    )}
+                </TouchableOpacity>
+                <TouchableOpacity style={{ alignSelf: 'center' }} activeOpacity={0.5} onPress={handleRemoveTask}>
+                    <Icon
+                        name="trash-2"
+                        size={24}
+                        color="#B2B2B2"
+                    />
+                </TouchableOpacity>
+            </View>
         </>
     )
 }
@@ -90,7 +132,10 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         fontFamily: 'Inter',
     },
-    trashIcon: {
-        width: 24,
+    inputText: {
+        height: 35,
+        width: '68%',
+        borderBottomWidth: 1,
+        borderBottomColor: '#B2B2B2'
     }
 })
